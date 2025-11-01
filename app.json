@@ -14,7 +14,8 @@
     },
     "extra": {
       "USE_API": true,
-      "URL_LOGIN": "https://backend-production-497d.up.railway.app/gym/login"
+      "URL_LOGIN": "https://backend-production-497d.up.railway.app/gym/login",
+      "URL_USER": "https://backend-production-497d.up.railway.app/gym/user/"
     },
     "ios": {
       "supportsTablet": true
