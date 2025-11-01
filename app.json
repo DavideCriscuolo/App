@@ -12,6 +12,10 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    "extra": {
+      "USE_API": true,
+      "URL_LOGIN": "https://backend-production-497d.up.railway.app/gym/login"
+    },
     "ios": {
       "supportsTablet": true
     },
