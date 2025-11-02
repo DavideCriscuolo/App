@@ -1,39 +1,49 @@
 import { useState } from "react";
 import { StyleSheet, Text, View, Button, TextInput, Alert } from "react-native";
 
-import {
-  createStaticNavigation,
-  useNavigation,
-} from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Constants from "expo-constants";
 export default function MainHome() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [emailManca, setEmailManca] = useState(false);
+  const [passManca, setPassManca] = useState(false);
+  const [loginFallito, setLoginFallito] = useState(false);
   //  const navigation = useNavigation();
   const navigation = useNavigation();
+  const url = "https://backend-production-497d.up.railway.app/gym/login";
+  console.log("URL login:", url);
   async function validate() {
-    if (!email || !password) {
-      Alert.alert("Inserisci email e password");
+    // Reset errori se vuoi gestirli
+    setEmailManca(false);
+    setPassManca(false);
+    setLoginFallito(false);
+
+    if (email === "") {
+      setEmailManca(true);
       return;
     }
-
-    console.log(email, password);
-    const url = Constants.expoConfig?.extra?.URL_LOGIN;
+    if (password === "") {
+      setPassManca(true);
+      return;
+    }
 
     try {
       const res = await fetch(url, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({ email, password }),
       });
 
       const data = await res.json();
 
       if (!res.ok) {
-        console.log("Login fallito", data);
-        Alert.alert("Login fallito");
+        setLoginFallito(true);
+        console.log("Login fallito");
         return;
       }
 
@@ -42,22 +52,29 @@ export default function MainHome() {
         return;
       }
 
+      // Usa AsyncStorage invece di localStorage
       await AsyncStorage.setItem("token", data.token);
       await AsyncStorage.setItem("email", email);
-      console.log("Token salvato");
 
-      navigation.navigate("Profile");
+      console.log("Login effettuato!");
+
+      // Usa navigation.navigate invece di navigate
+      navigation.navigate("ProfileScreen");
     } catch (error) {
-      console.error("Errore fetch:", error);
-      Alert.alert("Errore di rete");
+      console.error("Errore nella richiesta:", error);
+      Alert.alert("Errore di rete", error.message);
     }
   }
 
+  // Chiama validate senza parametri
+  function handleSubmit() {
+    validate();
+  }
   function handleSubmit() {
     validate(); // chiamata senza event
   }
   return (
-    <View style={styles.container}>
+    <View className="flex-1 justify-center ">
       <Text>Email:</Text>
       <TextInput
         value={email}
@@ -75,11 +92,3 @@ export default function MainHome() {
     </View>
   );
 }
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 20,
-  },
-});

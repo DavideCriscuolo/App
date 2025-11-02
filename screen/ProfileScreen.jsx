@@ -1,4 +1,4 @@
-import { View, StyleSheet, Text } from "react-native";
+import { View, Text } from "react-native";
 import { useEffect, useState } from "react";
 import Constants from "expo-constants";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -14,9 +14,12 @@ export default function Profile() {
   const email = location.state?.email || localStorage.getItem("email");
   //console.log(email);
 
-  const url = Constants.expoConfig?.extra?.URL_USER + encodeURIComponent(email);
+  const url =
+    "https://backend-production-497d.up.railway.app/gym/user/" +
+    encodeURIComponent(email);
 
   useEffect(() => {
+    console.log(email);
     const checkAuth = async () => {
       const token = await AsyncStorage.getItem("token");
 
@@ -63,7 +66,7 @@ export default function Profile() {
   }, [email, url, navigation]);
   if (isLoading) {
     return (
-      <View style={styles.container}>
+      <View>
         <Text>Caricamento...</Text>
       </View>
     );
@@ -85,31 +88,41 @@ export default function Profile() {
       item.bicipiteDestro &&
       item.bicipiteSinistro &&
       item.data ? (
-        <View style={styles.listItem}>
-          <Text style={styles.textList}>Peso: {item.peso} kg</Text>
-          <Text style={styles.textList}>Spalle: {item.spalle} cm</Text>
-          <Text style={styles.textList}>Petto: {item.petto} cm</Text>
-          <Text style={styles.textList}>Vita: {item.vita} cm</Text>
-          <Text style={styles.textList}>
+        <View className="list-none w-full bg-gray-200 p-4 my-2 rounded ">
+          <Text className=" py-2   border-b-2 border-black ">
+            Peso: {item.peso} kg
+          </Text>
+          <Text className="py-2  border-b-2 border-black ">
+            Spalle: {item.spalle} cm
+          </Text>
+          <Text className="py-2   border-b-2 border-black ">
+            Petto: {item.petto} cm
+          </Text>
+          <Text className="py-2   border-b-2 border-black ">
+            Vita: {item.vita} cm
+          </Text>
+          <Text className="py-2   border-b-2 border-black ">
             Bicipite Destro: {item.bicipiteDestro} cm
           </Text>
-          <Text style={styles.textList}>
+          <Text className="py-2   border-b-2 border-black ">
             Bicipite Sinistro: {item.bicipiteSinistro} cm
           </Text>
-          <Text style={styles.textList}>
+          <Text className="py-2   border-b-2 border-black ">
             Gamba Sinistra: {item.gambaSinistra} cm
           </Text>
-          <Text style={styles.textList}>
+          <Text className="py-2   border-b-2 border-black ">
             Gamba Destra: {item.gambaDestra} cm
           </Text>
-          <Text style={styles.textList}>
+          <Text className="py-2   border-b-2 border-black ">
             Polpaccio Sinistro: {item.polpaccioSinistro} cm
           </Text>
-          <Text style={styles.textList}>
+          <Text className="py-2   border-b-2 border-black ">
             Polpaccio Destro: {item.polpaccioDestro} cm
           </Text>
-          <Text style={styles.textList}>Plica: {item.plica} %</Text>
-          <Text style={styles.textList}>
+          <Text className="py-2   border-b-2 border-black ">
+            Plica: {item.plica} %
+          </Text>
+          <Text className="py-2   border-b-2 border-black ">
             Data Inserimento: {giorno}-{mese}-{anno}
           </Text>
         </View>
@@ -120,40 +133,17 @@ export default function Profile() {
   );
 
   return (
-    <View style={styles.container}>
+    <View className="flex-1  justify-center items-center ">
       <Text>
         {dataUser.nome} {dataUser.cognome}
       </Text>
-      <View>
+      <View className=" w-full">
         <FlatList
           data={[dataUser]}
           renderItem={renderItem}
           keyExtractor={(item) => item.id}
-          contentContainerStyle={styles.list}
         ></FlatList>
       </View>
-
-      {/* <FlatList data={[{ key: dataUser.peso }]}></FlatList> */}
     </View>
   );
 }
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 20,
-  },
-  list: {
-    padding: 10,
-  },
-  listItem: {
-    marginVertical: 6,
-    padding: 10,
-    backgroundColor: "#f2f2f2",
-    borderRadius: 8,
-  },
-  textList: {
-    marginBottom: 5,
-  },
-});
